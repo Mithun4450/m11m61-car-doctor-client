@@ -1,25 +1,42 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Components/provider/AuthProvider";
 import BookingRow from "../../Components/BookingRow/BookingRow";
+// import axios from "axios";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 
 const Bookings = () => {
 
     const {user} = useContext(AuthContext);
     const [bookings, setBookings] = useState([]);
-    console.log(bookings)
-    console.log(user.email)
+    const axiosSecure = useAxiosSecure();
 
-    const url = `http://localhost:5000/orders?email=${user.email}`
+    // const url = `http://localhost:5000/orders?email=${user.email}`
+    const url = `/orders?email=${user.email}`
 
     useEffect(() =>{
-        fetch(url)
-        .then(res => res.json())
-        .then(data =>{
-            console.log(data);
-            setBookings(data)
-        })
-    },[])
+
+        // axios.get(url, )
+        // .then(res =>{
+        //     setBookings(res.data)
+        // })
+
+        axiosSecure.get(url)
+        .then(res => setBookings(res.data))
+
+
+
+        // fetch(url, {credentials: 'include'})
+        // .then(res => res.json())
+        // .then(data =>{
+        //     console.log(data);
+        //     setBookings(data)
+        // })
+
+
+
+
+    },[url, axiosSecure])
 
     const handleBookingConfirm = id =>{
         fetch(`http://localhost:5000/orders/${id}`,{
